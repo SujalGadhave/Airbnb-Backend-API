@@ -49,6 +49,9 @@ public class AuthController {
     @PostMapping("/refresh")
     @Operation(summary = "Refresh access token", description = "Generates a new access token using a refresh token.")
     public ResponseEntity<LoginResponseDTO> refresh(HttpServletRequest httpServletRequest){
+        if (httpServletRequest.getCookies() == null) {
+            throw new AuthenticationServiceException("Refresh token not found inside the Cookies");
+        }
         String refreshToken = Arrays.stream(httpServletRequest.getCookies())
                 .filter(cookie -> "refreshToken".equals(cookie.getName()))
                 .map(Cookie::getValue)

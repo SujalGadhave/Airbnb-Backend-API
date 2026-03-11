@@ -19,7 +19,6 @@ import com.sujal.airbnb.Service.Interfaces.CheckoutService;
 import com.sujal.airbnb.Strategy.PricingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -63,7 +62,7 @@ public class BookingServiceImpl implements BookingService {
         HotelEntity hotel = hotelRepository.findById(bookingRequest.getHotelId()).orElseThrow(() ->
                 new ResourceNotFoundException("Hotel not found with id: "+bookingRequest.getHotelId()));
 
-        RoomEntity room = (RoomEntity) roomRepository.findById(bookingRequest.getRoomId()).orElseThrow(() ->
+        RoomEntity room = roomRepository.findById(bookingRequest.getRoomId()).orElseThrow(() ->
                 new ResourceNotFoundException("Room not found with id: "+bookingRequest.getRoomId()));
 
         List<InventoryEntity> inventoryList = inventoryRepository.findAndLockAvailableInventory(room.getId(),
@@ -142,7 +141,9 @@ public class BookingServiceImpl implements BookingService {
         UserEntity user = getCurrentUser();
         if (!user.equals(booking.getUser())){
             throw new UnAuthorisedException("Booking does not belong to this user with id: " +user.getId());
-        } if (hasBookingExpired(booking)){
+        }
+        
+        if (hasBookingExpired(booking)){
             throw new RuntimeException("Booking has already expired");
         }
 

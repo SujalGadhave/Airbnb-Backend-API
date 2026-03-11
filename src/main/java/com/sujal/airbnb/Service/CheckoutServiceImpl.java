@@ -64,7 +64,7 @@ public class CheckoutServiceImpl implements CheckoutService {
             booking.setPaymentSessionId(session.getId());
             bookingRepository.save(booking);
 
-            log.info("Session created successfully for booking wiht ID: {}", booking.getId());
+            log.info("Session created successfully for booking with ID: {}", booking.getId());
             return session.getUrl();
         }catch (StripeException e) {
             throw new RuntimeException(e);

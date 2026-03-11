@@ -15,7 +15,6 @@ import com.sujal.airbnb.Service.Interfaces.InventoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -84,7 +83,7 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     public List<InventoryDTO> getAllInventoryByRoom(Long roomId) throws AccessDeniedException {
         log.info("Getting All inventory by room for room with id: {}", roomId);
-        RoomEntity room = (RoomEntity) roomRepository.findById(roomId)
+        RoomEntity room = roomRepository.findById(roomId)
                 .orElseThrow(()-> new ResourceNotFoundException("Room not found with id: "+roomId));
 
         UserEntity user = getCurrentUser();
@@ -102,11 +101,11 @@ public class InventoryServiceImpl implements InventoryService {
         log.info("Updating All inventory by room for room with id: {} between date range: {}-{}", roomId,
                 updateInventoryRequestDTO.getStartDate(), updateInventoryRequestDTO.getEndDate());
 
-        RoomEntity room = (RoomEntity) roomRepository.findById(roomId)
+        RoomEntity room = roomRepository.findById(roomId)
                 .orElseThrow(()-> new ResourceNotFoundException("Room not found with id: "+roomId));
 
         UserEntity user = getCurrentUser();
-        if(!user.equals(room.getHotel().getOwner())) throw new AccessDeniedException("You are not the owner of rrom with id: "+roomId);
+        if(!user.equals(room.getHotel().getOwner())) throw new AccessDeniedException("You are not the owner of room with id: "+roomId);
 
         inventoryRepository.getInventoryAndLockBeforeUpdate(roomId, updateInventoryRequestDTO.getStartDate(),
                 updateInventoryRequestDTO.getEndDate());
