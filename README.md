@@ -1,4 +1,4 @@
-# 🏨 Airbnb Backend API
+# 🏨 Stayfinder
 
 <div align="center">
 
